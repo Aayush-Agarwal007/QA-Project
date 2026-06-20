@@ -1,0 +1,12 @@
+{
+  "name": "taskflow-mini",
+  "version": "1.0.0",
+  "description": "Tiny task management API used as a QA automation showcase project.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  }
+}

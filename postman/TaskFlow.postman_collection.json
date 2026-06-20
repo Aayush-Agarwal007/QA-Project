@@ -1,0 +1,74 @@
+{
+  "info": {
+    "name": "TaskFlow Mini API",
+    "description": "Manual/exploratory test collection for TaskFlow Mini. Pair with the automated Jest suite in /tests/api for regression coverage.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "Reset seed data",
+      "request": { "method": "POST", "url": "{{baseUrl}}/api/reset" }
+    },
+    {
+      "name": "Get all tasks",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks" }
+    },
+    {
+      "name": "Get tasks filtered by priority (BUG-003)",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks?priority=high" },
+      "description": "Expected: only high-priority tasks. Actual: returns all tasks — see BUG-003."
+    },
+    {
+      "name": "Get single task by id",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks/1" }
+    },
+    {
+      "name": "Get single task - not found",
+      "request": { "method": "GET", "url": "{{baseUrl}}/api/tasks/9999" }
+    },
+    {
+      "name": "Create task - valid",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/tasks",
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"New task\",\n  \"priority\": \"high\"\n}" }
+      }
+    },
+    {
+      "name": "Create task - empty title (BUG-001)",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/tasks",
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"\",\n  \"priority\": \"high\"\n}" }
+      },
+      "description": "Expected: 400 Bad Request. Actual: 201 Created with a blank title — see BUG-001."
+    },
+    {
+      "name": "Update task",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "url": "{{baseUrl}}/api/tasks/1",
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"Updated title\"\n}" }
+      }
+    },
+    {
+      "name": "Mark task complete",
+      "request": { "method": "PATCH", "url": "{{baseUrl}}/api/tasks/1/complete" }
+    },
+    {
+      "name": "Delete task",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tasks/1" }
+    },
+    {
+      "name": "Delete non-existent task (BUG-002)",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/api/tasks/9999" },
+      "description": "Expected: 404 Not Found. Actual: 200 OK — see BUG-002."
+    }
+  ]
+}

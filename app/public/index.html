@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>TaskFlow Mini</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="wrap">
+    <h1>TaskFlow Mini</h1>
+    <p class="subtitle">A tiny task manager &mdash; built as a QA automation showcase.</p>
+
+    <form id="task-form">
+      <input id="title-input" type="text" placeholder="Task title" autocomplete="off" />
+      <select id="priority-input">
+        <option value="high">High</option>
+        <option value="medium" selected>Medium</option>
+        <option value="low">Low</option>
+      </select>
+      <button type="submit">Add Task</button>
+    </form>
+
+    <ul id="task-list"></ul>
+  </main>
+  <script src="app.js"></script>
+</body>
+</html>
