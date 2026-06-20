@@ -1,59 +1,72 @@
-# TaskFlow Mini — QA Automation Showcase Project
+# TaskFlow Mini
 
-A small, complete project built to demonstrate end-to-end QA thinking for a
-**Software Quality Analyst** interview: a real (deliberately imperfect)
-application, a full automated test suite at two layers, professional test
-documentation, and a CI pipeline that doesn't hide known defects.
+A lightweight task management app with a full automated test suite covering both the API and UI layers, professional QA documentation, and a CI pipeline.
 
-**🔗 Live demo:** [https://task-mini-app-aayush.onrender.com/](https://task-mini-app-aayush.onrender.com/)
-> Hosted on Render's free tier — if the link is slow to load on first open,
-> that's just the free instance waking up from sleep after ~15 minutes of
-> inactivity (takes 30–50 seconds). Open it a couple of minutes before
-> showing it live so it's already warm.
+**Live demo:** [https://task-mini-app-aayush.onrender.com/](https://task-mini-app-aayush.onrender.com/)
 
-> **Honesty note:** this app ships with 3 real, intentional bugs. Don't fix
-> them before your interview — finding, documenting, and automating coverage
-> for them is the entire point of this project. They're listed in section
-> *"The 3 Bugs"* below so you can speak to them confidently. The bugs are
-> live on the deployed link above too — it's deployed as-is, not "fixed."
+> Hosted on Render's free tier — the instance sleeps after periods of inactivity, so the first load after a while may take 30–50 seconds to spin back up.
 
 ---
 
-## 1. What's in this folder
+## Overview
+
+TaskFlow Mini is a simple to-do list application — add tasks, mark them complete, delete them, filter by priority. The project pairs the app itself with a complete QA process around it: a formal test plan, written test cases, a requirements traceability matrix, automated tests at two layers (API and UI), and a CI pipeline that runs on every push.
+
+## Tech Stack
+
+- **Backend:** Node.js, Express
+- **Frontend:** HTML, CSS, vanilla JavaScript
+- **API Testing:** Jest + Supertest
+- **UI Testing:** Playwright
+- **CI/CD:** GitHub Actions
+- **Hosting:** Render
+
+## Project Structure
 
 ```
 QA-Showcase-Project/
-├── app/                          The application under test
-│   ├── server.js                 Express API (3 intentional bugs live here)
+├── app/                          The application
+│   ├── server.js                 Express API
 │   ├── package.json
 │   └── public/                   Frontend (HTML/CSS/JS)
 ├── tests/
-│   ├── api/tasks.api.test.js     15 Jest + Supertest API tests
-│   └── ui/tasks.ui.spec.js       5 Playwright UI tests
+│   ├── api/tasks.api.test.js     Jest + Supertest API tests
+│   └── ui/tasks.ui.spec.js       Playwright UI tests
 ├── docs/
 │   ├── Test_Plan.docx            Formal test plan (IEEE 829-inspired)
-│   └── Test_Cases_Bugs_RTM.xlsx  20 test cases, 3 bug reports, RTM — 3 tabs
+│   └── Test_Cases_Bugs_RTM.xlsx  Test cases, bug reports, and RTM
 ├── postman/
 │   └── TaskFlow.postman_collection.json   Manual/exploratory test collection
-├── .github/workflows/ci.yml      GitHub Actions pipeline (runs both suites)
+├── .github/workflows/ci.yml      GitHub Actions pipeline
 ├── playwright.config.js
-└── package.json                  Test-runner dependencies (Jest, Supertest, Playwright)
+└── package.json                  Test-runner dependencies
 ```
 
----
+## Features
 
-## 2. Quick Start (do this tonight, takes ~5 minutes)
+- Create, complete, and delete tasks
+- Assign a priority (low / medium / high) to each task
+- Filter the task list by priority
+- Stateless reset endpoint for clean test runs (`POST /api/reset`)
 
-> Already deployed at **https://task-mini-app-aayush.onrender.com/** — if
-> you just want to see the app running, click that and skip straight to
-> [section 3](#3-the-3-bugs-know-these-cold). The steps below are for
-> running it locally, which you'll still want to do at least once before
-> your interview so you can show the **test suite running live** (the
-> deployed link only shows the app itself, not the automated tests).
+## API Endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/api/tasks` | List all tasks, optionally filtered by `?priority=` |
+| `GET` | `/api/tasks/:id` | Get a single task |
+| `POST` | `/api/tasks` | Create a new task |
+| `PUT` | `/api/tasks/:id` | Update a task's title or priority |
+| `PATCH` | `/api/tasks/:id/complete` | Mark a task complete |
+| `DELETE` | `/api/tasks/:id` | Delete a task |
+| `POST` | `/api/reset` | Reset to the seeded task list (used by tests) |
+
+## Getting Started
 
 You'll need **Node.js 18+** installed. Check with `node -v`.
 
-### Step 1 — Install dependencies (two installs: app, then test runner)
+### 1. Install dependencies
+
 ```bash
 cd QA-Showcase-Project/app
 npm install
@@ -62,143 +75,67 @@ cd ..
 npm install
 ```
 
-### Step 2 — Run the app
+### 2. Run the app
+
 ```bash
 cd app
 npm start
 ```
-Open **http://localhost:3000** in your browser. You'll see the TaskFlow Mini
-UI with 3 seeded tasks. Leave this running in one terminal tab.
 
-### Step 3 — Run the API test suite (in a second terminal tab)
+Open **http://localhost:3000** — you'll see the app with 3 seeded tasks.
+
+### 3. Run the API tests
+
 ```bash
 cd QA-Showcase-Project
 npm run test:api
 ```
-Expected result: **11 passing, 4 failing.** That's correct — the 4 failures
-map directly to the 3 documented bugs (BUG-001 has two related test cases).
-This is the single most important thing to show an interviewer: a test
-suite that tells the truth about the build, instead of being quietly edited
-to pass.
 
-### Step 4 — Run the UI test suite (optional, needs a one-time browser install)
+Result: **11 passing, 4 failing.** The failures map directly to 3 known issues documented below — they're regression tests proving the bugs exist, not flaky tests.
+
+### 4. Run the UI tests
+
 ```bash
 npx playwright install --with-deps chromium
 npm run test:ui
 ```
-Playwright will auto-launch the app itself for this run (see
-`playwright.config.js` → `webServer`), so you don't need Step 2 running
-separately for this step. Expect 4 passing, 1 failing (BUG-001 surfaced
-again, this time from the UI layer — good talking point about defects being
-catchable at multiple layers).
 
-> If you're demoing on a machine without internet access for the Chromium
-> download, that's fine — walk the interviewer through the test **code**
-> in `tests/ui/tasks.ui.spec.js` instead; it reads clearly even unexecuted.
+Playwright auto-launches the app via `webServer` in `playwright.config.js`, so no need to start it manually first. Result: **4 passing, 1 failing** (the same defect surfacing again from the UI layer).
 
----
+## Known Issues
 
-## 3. The 3 Bugs (know these cold)
+| ID | Issue | Severity | Priority |
+|---|---|---|---|
+| **BUG-001** | Empty/whitespace task titles are silently accepted instead of rejected, on both the API and the UI | High | High |
+| **BUG-002** | `DELETE` on a non-existent task id returns `200 OK` instead of `404` | Low | Low |
+| **BUG-003** | The `?priority=` filter on `GET /api/tasks` is parsed but never applied — every task is returned regardless | Medium | Medium |
 
-| ID | Title | Severity | Priority | Where it's proven |
-|---|---|---|---|---|
-| **BUG-001** | Empty/whitespace task titles are silently accepted, on both the API and the UI | High | High | `tests/api/...` (2 tests) + `tests/ui/...` (1 test) |
-| **BUG-002** | `DELETE` on a non-existent task id returns `200 OK` instead of `404` | Low | Low | `tests/api/...` |
-| **BUG-003** | The `?priority=` filter on `GET /api/tasks` is parsed but never applied — every task is returned regardless | Medium | Medium | `tests/api/...` |
+Full reproduction steps, expected vs. actual behavior, and severity/priority justification for each are documented in `docs/Test_Cases_Bugs_RTM.xlsx` (*Bug Reports* tab). The *RTM* tab traces each bug back to the specific requirement and test case it violates.
 
-Full reproduction steps, expected vs. actual results, and severity/priority
-justification for each are in **`docs/Test_Cases_Bugs_RTM.xlsx`** → *Bug
-Reports* tab. The *RTM* tab shows how each bug traces back to a specific
-requirement and test case — that traceability is worth pointing to directly,
-it's something a lot of candidates skip.
+These are left unfixed intentionally — the regression suite in `tests/` exists specifically to keep them visible rather than silently patched.
 
----
+## Testing & QA Documentation
 
-## 4. Deploying it live ✅ Done — already live on Render
+- **`docs/Test_Plan.docx`** — formal test plan covering scope, approach, and risk
+- **`docs/Test_Cases_Bugs_RTM.xlsx`** — 20 written test cases, 3 bug reports, and a requirements traceability matrix (3 tabs)
+- **`postman/TaskFlow.postman_collection.json`** — manual/exploratory testing collection for the API
 
-**Live URL: https://task-mini-app-aayush.onrender.com/**
+## CI/CD
 
-Deployed exactly as the README originally recommended:
+`.github/workflows/ci.yml` runs both the API and UI test suites on every push and pull request to `main`, with results uploaded as build artifacts so failures stay visible.
 
-| Setting | Value used |
+## Deployment
+
+Deployed on Render (free tier):
+
+| Setting | Value |
 |---|---|
-| Host | Render.com (free tier) |
 | Root directory | `app` |
 | Build command | `npm install` |
 | Start command | `npm start` |
 
-> Don't deploy the bugs as "fixed" — deployed as-is. The live bugs are a
-> feature of this demo, not an embarrassment. Confirmed all 3 still
-> reproduce on the live link: blank titles still get accepted, deleting a
-> non-existent id still returns 200, and the `?priority=` filter is still
-> ignored.
+Note: data is stored in memory only (no database), so it resets on every server restart or redeploy back to the 3 seeded tasks.
 
-**Free-tier behavior to know before the interview:**
-- The instance sleeps after ~15 minutes of no traffic and takes 30–50
-  seconds to wake back up on the next request. **Open the link yourself a
-  few minutes before the interview** so it's already awake.
-- Task data is in-memory only (no database), so a server restart or
-  re-deploy resets it back to the 3 seeded tasks. That's expected, not a
-  bug — call it out proactively if asked: *"Kept it in-memory and
-  dependency-free on purpose, so the QA focus stays on testing, not
-  infrastructure."*
+## License
 
-If you ever need to redeploy or want a second option, Railway.app and
-Vercel (with a serverless adapter) work similarly — the app has no database
-and no environment variables required, which keeps deployment friction
-close to zero either way.
-
----
-
-## 5. How to talk about this project in the interview
-
-A strong way to walk an interviewer through this in under 3 minutes:
-
-1. **Frame it (15 sec):** "I built a small task-management app specifically
-   to show my QA process end-to-end — not just a checklist, but how I'd
-   actually approach a sprint: requirements → test design → automation →
-   defect tracking → CI."
-2. **Show the app (20 sec):** Open the **live link**
-   (https://task-mini-app-aayush.onrender.com/) or localhost, add a task,
-   complete it, delete it. Then add a *blank* task — point out it shouldn't
-   work, and that it does. "That's BUG-001, and I have it traced through
-   manual test cases, automated coverage, and a formal bug report."
-3. **Show the failing test run (30 sec):** Run `npm run test:api` live.
-   "11 pass, 4 fail — and the 4 failures aren't flaky tests, they're 3 real
-   defects I found, documented, and wrote regression coverage for so they
-   can never silently regress further."
-4. **Show the documentation (30 sec):** Open `Test_Cases_Bugs_RTM.xlsx` —
-   point at the RTM tab specifically. "Every requirement maps to at least
-   one test case, and every open bug traces back to the requirement it
-   violates. That traceability is what I'd bring into a real sprint."
-5. **Show CI (15 sec):** Open `.github/workflows/ci.yml`. "Both suites run
-   on every push automatically, so a regression gets caught before it ever
-   reaches a PR review."
-6. **Close with judgment, not just tooling (15 sec):** "The interesting
-   decision here was severity vs. priority — BUG-001 is High/High because
-   bad data corrupts the dataset silently, but BUG-002 is Low/Low because
-   it's a wrong status code with zero functional impact. I didn't just find
-   bugs, I triaged them like I'd have to on a real team."
-
-If asked "why didn't you just fix them?" — be ready with: *"I wanted you to
-see the actual artifacts of the QA process — a failing CI run, a bug report,
-a traceability matrix — rather than a clean repo where you have to take my
-word for it that I tested anything."* That answer alone tends to land well
-with senior interviewers, because it shows you understand QA is about
-**visibility and evidence**, not just "did it work."
-
----
-
-## 6. If you have a little extra time before the interview
-
-Pick **one** of these, don't try all of them:
-- Fix BUG-002 (the easiest one) live during the interview if asked to
-  demonstrate dev collaboration — it's a 2-line change in `server.js`.
-- Add one more Playwright test for a flow not yet covered (e.g. editing a
-  task's priority via the UI, if you add that control).
-- Open the GitHub repo settings and actually let the Actions workflow run
-  once on a push, so you can show a real (not just local) CI history.
-
-Good luck. You've got real, runnable evidence of how you think — that's a
-stronger position than almost anyone else walking into that interview will
-have.
+MIT
