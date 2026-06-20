@@ -5,10 +5,17 @@ A small, complete project built to demonstrate end-to-end QA thinking for a
 application, a full automated test suite at two layers, professional test
 documentation, and a CI pipeline that doesn't hide known defects.
 
+**🔗 Live demo:** [https://task-mini-app-aayush.onrender.com/](https://task-mini-app-aayush.onrender.com/)
+> Hosted on Render's free tier — if the link is slow to load on first open,
+> that's just the free instance waking up from sleep after ~15 minutes of
+> inactivity (takes 30–50 seconds). Open it a couple of minutes before
+> showing it live so it's already warm.
+
 > **Honesty note:** this app ships with 3 real, intentional bugs. Don't fix
 > them before your interview — finding, documenting, and automating coverage
 > for them is the entire point of this project. They're listed in section
-> *"The 3 Bugs"* below so you can speak to them confidently.
+> *"The 3 Bugs"* below so you can speak to them confidently. The bugs are
+> live on the deployed link above too — it's deployed as-is, not "fixed."
 
 ---
 
@@ -36,6 +43,13 @@ QA-Showcase-Project/
 ---
 
 ## 2. Quick Start (do this tonight, takes ~5 minutes)
+
+> Already deployed at **https://task-mini-app-aayush.onrender.com/** — if
+> you just want to see the app running, click that and skip straight to
+> [section 3](#3-the-3-bugs-know-these-cold). The steps below are for
+> running it locally, which you'll still want to do at least once before
+> your interview so you can show the **test suite running live** (the
+> deployed link only shows the app itself, not the automated tests).
 
 You'll need **Node.js 18+** installed. Check with `node -v`.
 
@@ -100,25 +114,39 @@ it's something a lot of candidates skip.
 
 ---
 
-## 4. Deploying it live (optional, but a nice "look, it's live" moment)
+## 4. Deploying it live ✅ Done — already live on Render
 
-If you want a live link to drop in chat or open during the interview instead
-of running locally:
+**Live URL: https://task-mini-app-aayush.onrender.com/**
 
-**Render.com (free tier, ~3 minutes):**
-1. Push this folder to a new GitHub repo.
-2. On Render: New → Web Service → connect the repo.
-3. Root directory: `app`
-4. Build command: `npm install`
-5. Start command: `npm start`
-6. Deploy. Render gives you a public URL once the build finishes.
+Deployed exactly as the README originally recommended:
 
-**Railway.app** and **Vercel** (with a serverless adapter) work similarly if
-you prefer those — the app has no database and no environment variables
-required, which keeps deployment friction close to zero.
+| Setting | Value used |
+|---|---|
+| Host | Render.com (free tier) |
+| Root directory | `app` |
+| Build command | `npm install` |
+| Start command | `npm start` |
 
-> Don't deploy the bugs as "fixed" — deploy it as-is. The live bugs are a
-> feature of this demo, not an embarrassment.
+> Don't deploy the bugs as "fixed" — deployed as-is. The live bugs are a
+> feature of this demo, not an embarrassment. Confirmed all 3 still
+> reproduce on the live link: blank titles still get accepted, deleting a
+> non-existent id still returns 200, and the `?priority=` filter is still
+> ignored.
+
+**Free-tier behavior to know before the interview:**
+- The instance sleeps after ~15 minutes of no traffic and takes 30–50
+  seconds to wake back up on the next request. **Open the link yourself a
+  few minutes before the interview** so it's already awake.
+- Task data is in-memory only (no database), so a server restart or
+  re-deploy resets it back to the 3 seeded tasks. That's expected, not a
+  bug — call it out proactively if asked: *"Kept it in-memory and
+  dependency-free on purpose, so the QA focus stays on testing, not
+  infrastructure."*
+
+If you ever need to redeploy or want a second option, Railway.app and
+Vercel (with a serverless adapter) work similarly — the app has no database
+and no environment variables required, which keeps deployment friction
+close to zero either way.
 
 ---
 
@@ -130,7 +158,8 @@ A strong way to walk an interviewer through this in under 3 minutes:
    to show my QA process end-to-end — not just a checklist, but how I'd
    actually approach a sprint: requirements → test design → automation →
    defect tracking → CI."
-2. **Show the app (20 sec):** Open the live UI or localhost, add a task,
+2. **Show the app (20 sec):** Open the **live link**
+   (https://task-mini-app-aayush.onrender.com/) or localhost, add a task,
    complete it, delete it. Then add a *blank* task — point out it shouldn't
    work, and that it does. "That's BUG-001, and I have it traced through
    manual test cases, automated coverage, and a formal bug report."
